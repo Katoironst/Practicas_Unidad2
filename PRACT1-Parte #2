@@ -1,0 +1,28 @@
+package com.example.aplicacion_recetas_prototipo;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+public class Bienvenida extends AppCompatActivity {
+
+    private TextView saludoM;
+            Bundle datos;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_bienvenida);
+
+        saludoM = findViewById(R.id.saludoM);
+        datos = getIntent().getExtras();
+        saludoM.setText(datos.getString("nombre"));
+    }
+
+    public void Regresar(View view){
+
+        finish();
+    }
+}

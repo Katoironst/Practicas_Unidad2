@@ -1,0 +1,20 @@
+package com.example.aplicacion_recetas_prototipo;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+
+public class Error extends AppCompatActivity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_error);
+    }
+
+    public void Regresar(View view){
+        finish();
+    }
+
+}

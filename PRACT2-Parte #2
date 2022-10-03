@@ -1,0 +1,30 @@
+package com.example.u2_pract2;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.os.Bundle;
+import android.view.View;
+import android.widget.TextView;
+
+public class MainActivityDos extends AppCompatActivity {
+
+    TextView tvDatos;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main_dos);
+
+        tvDatos = findViewById(R.id.textViewDatos);
+
+        Bundle recibeDatos = getIntent().getExtras();
+        String[] info = recibeDatos.getStringArray("keyDatos");
+
+        tvDatos.setText("Nombre(s): "+info[0]+"\nApellidoPaterno: "+info[1]+"\nApellidoMaterno: "+info[2]+"\nColonia: "+info[3]+"\nCalle: "+info[4]+"\nCP: "+info[5]+"\nEstado: "+info[6]+"\nMunicipio: "+info[7]);
+
+    }
+
+    public void terminar(View view){
+        finish();
+    }
+}

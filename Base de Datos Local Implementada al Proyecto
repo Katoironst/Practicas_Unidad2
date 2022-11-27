@@ -1,0 +1,177 @@
+//Joaquín Emiliano Cato Sosa 21590088
+
+//---------------------------------------------------PRIMERA PARTE----------------------------------------------------------------//
+
+package com.example.aplicacion_recetas_prototipo;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.ContentValues;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.os.Bundle;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class Platillos_Favoritos extends AppCompatActivity {
+
+    EditText ed1, ed2, ed3, ed4, ed5;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_platillos_favoritos);
+
+        ed1 = findViewById(R.id.ed1);
+        ed2 = findViewById(R.id.ed2);
+        ed3 = findViewById(R.id.ed3);
+        ed4 = findViewById(R.id.ed4);
+        ed5 = findViewById(R.id.ed5);
+    }
+
+    public void altas(View view){
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        String idPlatillo = ed1.getText().toString();
+        String nombre = ed2.getText().toString();
+        String tipo = ed3.getText().toString();
+        String ingCarac = ed4.getText().toString();
+        String paisOrigen = ed5.getText().toString();
+
+        ContentValues registro = new ContentValues();
+
+        registro.put("idPlatillo", idPlatillo);
+        registro.put("nombre", nombre);
+        registro.put("tipo", tipo);
+        registro.put("ingCarac", ingCarac);
+        registro.put("paisOrigen", paisOrigen);
+
+        bd.insert("Platillos", null, registro);
+        bd.close();
+        this.limpia();
+        Toast.makeText(this, "Datos del Platillo Cargados", Toast.LENGTH_SHORT).show();
+    }
+
+    public void limpia(){
+        ed1.setText("");
+        ed2.setText("");
+        ed3.setText("");
+        ed4.setText("");
+        ed5.setText("");
+    }
+
+    public void limpiar(View view){
+        this.limpia();
+    }
+
+    public void consultar(View view){
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        String idPlatillo = ed1.getText().toString();
+
+        Cursor fila = bd.rawQuery("select nombre, tipo, ingCarac, paisOrigen from Platillos where idPlatillo=" +idPlatillo, null);
+
+        if(fila.moveToFirst()){
+            ed2.setText(fila.getString(0));
+            ed3.setText(fila.getString(1));
+            ed4.setText(fila.getString(2));
+            ed5.setText(fila.getString(3));
+        }else
+            Toast.makeText(this, "No Existe Ningún Platillo con esa ID", Toast.LENGTH_SHORT).show();
+        bd.close();
+    }
+
+    public void bajas(View view){
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        String idPlatillo = ed1.getText().toString();
+
+        int cant = bd.delete("Platillos", "idPlatillo=" +idPlatillo, null);
+        bd.close();
+
+        ed1.setText("");
+        ed2.setText("");
+        ed3.setText("");
+        ed4.setText("");
+        ed5.setText("");
+
+        if(cant == 1){
+            Toast.makeText(this, "Platillo Eliminado", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "No Existe el Platillo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void modificacion(View view){
+        AdminSQLiteOpenHelper admin = new AdminSQLiteOpenHelper(this, "administracion", null, 1);
+        SQLiteDatabase bd = admin.getWritableDatabase();
+
+        String idPlatillo = ed1.getText().toString();
+        String nombre = ed2.getText().toString();
+        String tipo = ed3.getText().toString();
+        String ingCarac = ed4.getText().toString();
+        String paisOrigen = ed5.getText().toString();
+
+        ContentValues registro = new ContentValues();
+
+        registro.put("idPlatillo", idPlatillo);
+        registro.put("nombre", nombre);
+        registro.put("tipo", tipo);
+        registro.put("ingCarac", ingCarac);
+        registro.put("paisOrigen", paisOrigen);
+
+        int cant = bd.update("Platillos", registro, "idPlatillo=" +idPlatillo, null);
+        bd.close();
+
+        if(cant == 1){
+            Toast.makeText(this, "Datos Modificados con Éxito", Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "No Existe el Platillo", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public void salir(View view){
+        finish();
+    }
+
+}
+
+//---------------------------------------------------SEGUNDA PARTE---------------------------------------------------------------//
+
+package com.example.aplicacion_recetas_prototipo;
+
+import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteOpenHelper;
+
+import androidx.annotation.Nullable;
+
+public class AdminSQLiteOpenHelper extends SQLiteOpenHelper {
+
+    public AdminSQLiteOpenHelper(@Nullable Context context, @Nullable String name, @Nullable SQLiteDatabase.CursorFactory factory, int version){
+        super(context, name, factory, version);
+    }
+
+    @Override
+    public void onCreate(SQLiteDatabase bd){
+
+        bd.execSQL("create table Platillos (idPlatillo integer primary key, nombre text, tipo text, ingCarac text, paisOrigen text)");
+
+    }
+
+    @Override
+    public void onUpgrade(SQLiteDatabase bd, int i, int i1){
+
+        bd.execSQL("drop table if exists Platillos");
+        bd.execSQL("create table Platillos (idPlatillo integer primary key, nombre text, tipo text, ingCarac text, paisOrigen text)");
+
+    }
+
+}
